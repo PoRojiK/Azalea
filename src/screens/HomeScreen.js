@@ -7,6 +7,7 @@ import {
   TextInput,
   Modal,
   Button,
+  Image,
 } from 'react-native';
 import React, {useState} from 'react';
 import {s} from 'react-native-wind';
