@@ -39,17 +39,15 @@ export const Banner_data = [
     {
         title: "important_notification",
         name: "ВАЖНЫЕ\nНАПОМИНАНИЯ",
-        bottom_text: "Пишите дни рождения дорогих людей, а мы напомним, когда их поздравить",
-        image: require("../assets/images/flower_basket.png"),
+        bottom_text: "Пишите дни рождения дорогих людей,\nа мы напомним, когда их поздравить!",
+        image: require("../assets/images/banner1.png"),
+        image1: require("../assets/images/banner_arrow.png"),
     },
     {
-        title: "",
-        name: "Подарки",
-        image: require("../assets/images/flower_basket.png"),
-    },
-    {
-        title: "flower_basket",
-        name: "Подарки",
-        image: require("../assets/images/flower_basket.png"),
+        title: "sales",
+        name: "СКИДКИ В ВАШ\nДЕНЬ РОЖДЕНИЯ",
+        bottom_text: "Укажите ваш день рождения в профиле,\nв этот день у вас будет скидка на заказ!",
+        image: require("../assets/images/banner2.png"),
+        image1: require("../assets/images/banner_arrow1.png"),
     },
 ]
