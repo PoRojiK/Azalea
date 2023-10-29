@@ -12,6 +12,7 @@ import {
 import React, {useState} from 'react';
 import {s} from 'react-native-wind';
 import Categories from '../components/CategoriesMain';
+import Banners from '../components/Banner';
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
@@ -117,6 +118,9 @@ export default function HomeScreen() {
       {/* categories */}
       <View>
         <Categories />
+      </View>
+      <View>
+        <Banners />
       </View>
     </SafeAreaView>
   );

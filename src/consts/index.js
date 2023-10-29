@@ -35,3 +35,21 @@ export const RowData = () => {
         secondRowCategories,
     };
 }
+export const Banner_data = [
+    {
+        title: "important_notification",
+        name: "ВАЖНЫЕ\nНАПОМИНАНИЯ",
+        bottom_text: "Пишите дни рождения дорогих людей, а мы напомним, когда их поздравить",
+        image: require("../assets/images/flower_basket.png"),
+    },
+    {
+        title: "",
+        name: "Подарки",
+        image: require("../assets/images/flower_basket.png"),
+    },
+    {
+        title: "flower_basket",
+        name: "Подарки",
+        image: require("../assets/images/flower_basket.png"),
+    },
+]
