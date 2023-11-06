@@ -6,9 +6,9 @@ import {Banner_data} from '../consts/index';
 
 export default function Banners() {
     return (
-        <ScrollView horizontal contentContainerStyle={{paddingHorizontal: 8, marginTop: 18, justifyContent: "space-between"}}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal contentContainerStyle={{paddingHorizontal: 8, marginTop: 15, justifyContent: "space-between"}}>
           {Banner_data.map((cat, index, name, bottom_text) => (  
-            <TouchableOpacity key={index} style={{marginRight: 4, backgroundColor: index === 0 ? '#ddd9e7' : '#e4ecff', borderRadius: 15, height:135,width:300}}>
+            <TouchableOpacity key={index} style={{marginRight: 8, backgroundColor: index === 0 ? '#ddd9e7' : '#e4ecff', borderRadius: 15, height:135,width:300}}>
               <View>
                 <Text
                   style={[
@@ -44,7 +44,8 @@ export default function Banners() {
                   position: 'absolute',
                   zIndex: -1,
                   marginTop: index === 1 ? -15 : -20,
-                  marginLeft: index === 1? 180 : 160,
+                  marginLeft: index === 1? 180 : 140,
+                  borderRadius: index === 1? 0 : 20,
                 }} />
               </View>
             </TouchableOpacity>

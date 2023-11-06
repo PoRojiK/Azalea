@@ -8,11 +8,13 @@ import {
   Modal,
   Button,
   Image,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {s} from 'react-native-wind';
 import Categories from '../components/CategoriesMain';
 import Banners from '../components/Banner';
+import FlowerShop from '../components/FlowerShop';
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function HomeScreen() {
@@ -26,7 +28,7 @@ export default function HomeScreen() {
     setAddressMenuVisible(false); // Закрываем меню после сохранения
   };
   return (
-    <SafeAreaView style={s`flex-1 bg-white`}>
+    <ScrollView style={s`flex-1 bg-white`}>
       {/* statusbar */}
       <StatusBar backgroundColor="#ffffff" barStyle="dark-content" />
       <View
@@ -118,10 +120,12 @@ export default function HomeScreen() {
       {/* categories */}
       <View>
         <Categories />
-      </View>
-      <View>
         <Banners />
       </View>
-    </SafeAreaView>
+        <ScrollView>
+        <FlowerShop />
+        </ScrollView>
+      
+    </ScrollView>
   );
 }
