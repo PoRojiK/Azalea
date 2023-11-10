@@ -15,6 +15,7 @@ const eventsName = 'Мои события';
 const profilesName = 'Профиль';
 
 const AppNavigation = () => {
+
   return (
     <NavigationContainer>
       <Tab.Navigator
