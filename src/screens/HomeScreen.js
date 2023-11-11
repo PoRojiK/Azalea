@@ -109,7 +109,7 @@ export default function HomeScreen() {
         </View>
         <TouchableOpacity
           style={[
-            s`w-10 h=10 justify-center items-center`,
+            s`w-10 h-10 justify-center items-center`,
             {backgroundColor: '#f6f6f6', borderRadius: 13},
           ]}
           onPress={() => setFiltersVisible(true)}>

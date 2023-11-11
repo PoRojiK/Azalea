@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import {FlowerData} from '../consts/index.js';
 import {s} from 'react-native-wind';
-import {MaterialIcons} from '@expo/vector-icons';
+import {MaterialIcons,AntDesign} from '@expo/vector-icons';
+
 
 const groupData = (data, itemsPerGroup) => {
   const result = [];
@@ -79,11 +80,14 @@ const renderItem = ({item}) => (
 );
 
 const renderCategory = ({item}) => (
-  <View style={{marginTop: 15, justifyContent: 'space-between'}}>
-    <Text
-      style={{fontSize: 20, fontWeight: 'bold', margin: 10, color: 'black'}}>
+  <View style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10, color: 'black' }}>
       {item[0].category}
     </Text>
+    <TouchableOpacity
+    style={[s`w-10 h-10 justify-center items-center`,{backgroundColor: '#f6f6f6', borderRadius: 13, marginRight:10},]}>
+    <AntDesign name="right" size={20} color="black"/>
+    </TouchableOpacity>
   </View>
 );
 

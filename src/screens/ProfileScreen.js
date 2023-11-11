@@ -1,20 +1,12 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import RegistrationScreen from './RegistrationScreen';
-import LoginScreen from './LoginScreen';
+import { View, Text } from 'react-native'
+import React from 'react'
 
-const Stack = createNativeStackNavigator();
 
-const ProfileScreen = () => {
+export default function ProfileScreen({route}) {
+  const { username } = route.params;
   return (
-    <NavigationContainer independent={true}>
-      <Stack.Navigator>
-        <Stack.Screen name="Register" component={RegistrationScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-};
-
-export default ProfileScreen;
+    <View>
+      <Text style={{color: 'black'}}>{`Привет, ${username}!`}</Text>
+    </View>
+  )
+}

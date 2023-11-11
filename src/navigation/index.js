@@ -1,7 +1,8 @@
 import React from 'react';
 import HomeScreen from '../screens/HomeScreen';
 import EventsScreen from '../screens/EventsScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import ProfileNav from '../screens/ProfileNav';
+import ProductData from '../screens/CategoryPage'
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -13,6 +14,7 @@ const Tab = createBottomTabNavigator();
 const homeName = 'Главная';
 const eventsName = 'Мои события';
 const profilesName = 'Профиль';
+const ProductDataName = 'Категории';
 
 const AppNavigation = () => {
 
@@ -57,7 +59,10 @@ const AppNavigation = () => {
         })}>
         <Tab.Screen name={homeName} component={HomeScreen} options={{ headerShown: false}} />
         <Tab.Screen name={eventsName} component={EventsScreen} options={{ headerShown: true }}/>
-        <Tab.Screen name={profilesName} component={ProfileScreen} options={{ headerShown: true }}/>
+        <Tab.Screen name={profilesName} component={ProfileNav} options={{ headerShown: false }}/>
+        <Tab.Screen name={ProductDataName} component={ProductData} options={{ headerShown: false }}/>
+        
+
       </Tab.Navigator>
     </NavigationContainer>
   );
