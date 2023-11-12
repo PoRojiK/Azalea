@@ -1,8 +1,8 @@
-import React from 'react';
-import HomeScreen from '../screens/HomeScreen';
+import React, {useState} from 'react';
+import MainNav from '../screens/MainNav';
 import EventsScreen from '../screens/EventsScreen';
 import ProfileNav from '../screens/ProfileNav';
-import ProductData from '../screens/CategoryPage'
+import {FlowerData} from '../consts/index'
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -14,10 +14,9 @@ const Tab = createBottomTabNavigator();
 const homeName = 'Главная';
 const eventsName = 'Мои события';
 const profilesName = 'Профиль';
-const ProductDataName = 'Категории';
+const FavouriteName = 'Избранное';
 
 const AppNavigation = () => {
-
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -41,15 +40,15 @@ const AppNavigation = () => {
             if (rn === homeName) {
               iconName = focused ? 'home' : 'home-outline';
               color = focused ? 'black' : 'grey';
-              
             } else if (rn === eventsName) {
               iconName = focused ? 'calendar-sharp' : 'calendar-outline';
               color = focused ? 'black' : 'grey';
-
             } else if (rn === profilesName) {
               iconName = focused ? 'flower' : 'flower-outline';
               color = focused ? 'black' : 'grey';
-
+            } else if (rn === FavouriteName) {
+              iconName = focused ? 'heart-outline' : 'heart';
+              color = focused ? 'black' : 'grey';
             }
             
             return (
@@ -57,12 +56,10 @@ const AppNavigation = () => {
             );
           },
         })}>
-        <Tab.Screen name={homeName} component={HomeScreen} options={{ headerShown: false}} />
+        <Tab.Screen name={homeName} component={MainNav} options={{ headerShown: false}} />
+
         <Tab.Screen name={eventsName} component={EventsScreen} options={{ headerShown: true }}/>
         <Tab.Screen name={profilesName} component={ProfileNav} options={{ headerShown: false }}/>
-        <Tab.Screen name={ProductDataName} component={ProductData} options={{ headerShown: false }}/>
-        
-
       </Tab.Navigator>
     </NavigationContainer>
   );
