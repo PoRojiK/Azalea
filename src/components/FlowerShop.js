@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { FlowerData } from '../consts/index.js';
 import { s } from 'react-native-wind';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useFavorites } from '../screens/MainNav'; // Import the hook
 
 const FlowerShop = () => {
+  const [favouriteStates, toggleFavourite] = useState(false);
   const itemsPerGroup = 6;
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    // You can perform additional actions here, such as updating the database.
+  };
 
   const groupData = (data, itemsPerGroup) => {
     return Array.from({ length: Math.ceil(data.length / itemsPerGroup) }, (_, i) =>
       data.slice(i * itemsPerGroup, i * itemsPerGroup + itemsPerGroup)
     );
   };
-  const { favouriteStates, toggleFavourite } = useFavorites(); // Use the hook
-  const renderItem = ({ item,index }) => {
+
+  const renderItem = ({ item }) => {
     const id = item.id
     return (
       <TouchableOpacity
@@ -39,11 +43,11 @@ const FlowerShop = () => {
             {
               borderRadius: 20,
               padding: 10,
-              backgroundColor: 'rgba(0,0,0,0.4)',
+              backgroundColor: favouriteStates[id] ? 'red' : 'rgba(0,0,0,0.4)',
             },
           ]}
         >
-          <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color={favouriteStates[id] ? 'red' : 'white'} />
+          <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color="white" />
         </TouchableOpacity>
 
         <Text style={{ fontWeight: 'bold', marginTop: 10, marginHorizontal: 10, fontSize: 12, color: 'black', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -74,11 +78,10 @@ const FlowerShop = () => {
   };
 
   const navigationMain = useNavigation();
-  
-  const renderCategory = ({ item}) => (
+
+  const renderCategory = ({ item }) => (
     <TouchableOpacity
-    onPress={() => navigationMain.navigate('Категория', { category: item[0].category,item })}
-      
+      onPress={() => navigationMain.navigate('Категория', { category: item[0].category, item })}
       style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
     >
       <Text style={{ fontSize: 20, fontWeight: 'bold', marginHorizontal: 10, color: 'black' }}>{item[0].category}</Text>
@@ -96,7 +99,7 @@ const FlowerShop = () => {
         <View key={`group_${id}`}>
           {id % itemsPerGroup === 0 ? renderCategory({ item: group, id }) : renderCategory({ item: group, id })}
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            {group.map((flower, flowerid) => renderItem({ item: flower, index: flowerid, toggleFavourite, isFavourite: favouriteStates[flowerid] }))}
+            {group.map((flower, flowerid) => renderItem({ item: flower }))}
           </View>
         </View>
       ))}

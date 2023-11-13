@@ -14,7 +14,6 @@ import React, {useState} from 'react';
 import {s} from 'react-native-wind';
 import Categories from '../components/CategoriesMain';
 import Banners from '../components/Banner';
-import MainNavPage from '../screens/MainNav'
 import FlowerShop from '../components/FlowerShop';
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -116,9 +115,6 @@ export default function HomeScreen() {
           onPress={() => setFiltersVisible(true)}>
           <MaterialIcons name="filter-list" size={24} color="black" />
         </TouchableOpacity>
-      </View>
-      <View>
-        <MainNavPage />
       </View>
       {/* categories */}
       <View>

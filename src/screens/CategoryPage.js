@@ -4,19 +4,13 @@ import { FlowerData } from '../consts/index';
 import { s } from 'react-native-wind';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useFavorites } from '../screens/MainNav'; // Import the hook
+
 
 const CategoryPageMain = ({ route }) => {
   const navigation = useNavigation();
   const { category,item } = route.params;
-  const { favouriteStates, toggleFavourite } = useFavorites(); // Use the hook
 
   const filteredData = FlowerData.filter((item) => item.category === category);
-
-  useEffect(() => {
-    navigation.setParams({ toggleFavourite });
-  }, [toggleFavourite, navigation]);
-  const id = item.id
 
   return (
     <ScrollView>
@@ -45,7 +39,6 @@ const CategoryPageMain = ({ route }) => {
             <Image style={{ width: '100%', height: 180, resizeMode: 'cover', borderRadius: 15 }} source={item.image} />
 
             <TouchableOpacity
-              onPress={() => toggleFavourite(id)}
               style={[
                 s`absolute top-2 right-2`,
                 {
@@ -55,7 +48,6 @@ const CategoryPageMain = ({ route }) => {
                 },
               ]}
             >
-              <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color={favouriteStates[id] ? 'red' : 'white'} />
             </TouchableOpacity>
 
             <Text style={{ fontWeight: 'bold', marginTop: 10, marginHorizontal: 10, fontSize: 12, color: 'black', overflow: 'hidden', textOverflow: 'ellipsis' }}>

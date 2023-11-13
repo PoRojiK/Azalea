@@ -32,7 +32,7 @@ const RegistrationScreen = ({ navigation }) => {
                 (tx, results) => {
                   if (results.rowsAffected > 0) {
                     console.log('Пользователь успешно зарегистрирован');
-                    navigationLogin.navigate('Профиль');
+                    navigationLogin.navigate('Профиль', {username});
                   } else {
                     alert('Ошибка регистрации');
                   }

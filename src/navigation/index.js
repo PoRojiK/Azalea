@@ -1,68 +1,94 @@
-import React, {useState} from 'react';
-import MainNav from '../screens/MainNav';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
+
+import FlowerShop from '../components/FlowerShop';
+import CategoryPageMain from '../screens/CategoryPage';
 import EventsScreen from '../screens/EventsScreen';
-import ProfileNav from '../screens/ProfileNav';
-import {FlowerData} from '../consts/index'
+import RegistrationScreen from '../screens/RegistrationScreen';
+import LoginScreen from '../screens/LoginScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import FavoritesScreen from '../screens/FavoritesScreen';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Ionicons} from '@expo/vector-icons';
-import {View,Text} from 'react-native';
-
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const homeName = 'Главная';
-const eventsName = 'Мои события';
-const profilesName = 'Профиль';
-const FavouriteName = 'Избранное';
+const MainNavPage = () => (
+  <NavigationContainer independent={true}>
+    <Stack.Navigator initialRouteName="FlowerShop">
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Категория" options={{ headerShown: false }}> 
+        {({ route, navigation }) => (
+          <CategoryPageMain route={route} navigation={navigation} />
+        )}
+      </Stack.Screen>
+    </Stack.Navigator>
+  </NavigationContainer>
+);
 
-const AppNavigation = () => {
-  return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName={homeName}
-        screenOptions={({route}) => ({
-          tabBarActiveTintColor: 'black',
-          tabBarInactiveTintColor: 'gray',
-          tabBarStyle: {
-            backgroundColor: 'white', // Background color of the tab bar
-            height:60,
-            paddingTop: 10,
-            borderTopWidth:0,
-          },
-          tabBarHideOnKeyboard: true,
-          tabBarLabelStyle: {
-            paddingBottom: 10, fontSize: 10,
-          },
-          tabBarIcon: ({focused, color, size}) => {
-            let iconName;
-            let rn = route.name;
-            if (rn === homeName) {
-              iconName = focused ? 'home' : 'home-outline';
-              color = focused ? 'black' : 'grey';
-            } else if (rn === eventsName) {
-              iconName = focused ? 'calendar-sharp' : 'calendar-outline';
-              color = focused ? 'black' : 'grey';
-            } else if (rn === profilesName) {
-              iconName = focused ? 'flower' : 'flower-outline';
-              color = focused ? 'black' : 'grey';
-            } else if (rn === FavouriteName) {
-              iconName = focused ? 'heart-outline' : 'heart';
-              color = focused ? 'black' : 'grey';
-            }
-            
-            return (
-                <Ionicons name={iconName} size={24} color={color}/>
-            );
-          },
-        })}>
-        <Tab.Screen name={homeName} component={MainNav} options={{ headerShown: false}} />
+const ProfileNav = () => (
+  <NavigationContainer independent={true}>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Вход в аккаунт"
+        component={LoginScreen}
+        options={{
+          cardStyle: { backgroundColor: 'transparent' },
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="Регистрация"
+        component={RegistrationScreen}
+        options={{
+          headerShown: false,
+          cardStyle: { backgroundColor: 'transparent' },
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen name="Профиль" component={ProfileScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  </NavigationContainer>
+);
 
-        <Tab.Screen name={eventsName} component={EventsScreen} options={{ headerShown: true }}/>
-        <Tab.Screen name={profilesName} component={ProfileNav} options={{ headerShown: false }}/>
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-};
+const AppNavigation = () => (
+  <NavigationContainer>
+    <Tab.Navigator
+      initialRouteName="Главная"
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          backgroundColor: 'white',
+          height: 60,
+          paddingTop: 10,
+          borderTopWidth: 0,
+        },
+        tabBarHideOnKeyboard: true,
+        tabBarLabelStyle: {
+          paddingBottom: 10,
+          fontSize: 10,
+        },
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === 'Главная') iconName = focused ? 'home' : 'home-outline';
+          else if (route.name === 'Мои события') iconName = focused ? 'calendar-sharp' : 'calendar-outline';
+          else if (route.name === 'Профиль') iconName = focused ? 'flower' : 'flower-outline';
+          else if (route.name === 'Избранное') iconName = focused ? 'heart-outline' : 'heart';
+
+          return <Ionicons name={iconName} size={24} color={color} />;
+        },
+      })}
+    >
+      <Tab.Screen name="Главная" component={MainNavPage} options={{ headerShown: false }} />
+      <Tab.Screen name="Избранное" component={FavoritesScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Мои события" component={EventsScreen} options={{ headerShown: true }} />
+      <Tab.Screen name="Профиль" component={ProfileNav} options={{ headerShown: false }} />
+    </Tab.Navigator>
+  </NavigationContainer>
+);
 
 export default AppNavigation;
