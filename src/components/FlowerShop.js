@@ -4,13 +4,35 @@ import { FlowerData } from '../consts/index.js';
 import { s } from 'react-native-wind';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import SQLite from 'react-native-sqlite-storage';
+import userId from '../screens/LoginScreen';
 
-const FlowerShop = () => {
-  const [favouriteStates, toggleFavourite] = useState(false);
+const db = SQLite.openDatabase({
+  name: 'users.db',
+  location: 'Azalea',
+});
+
+const FlowerShop = (userId) => {
+  const [favouriteStates, setFavouriteStates] = useState({});
   const itemsPerGroup = 6;
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    // You can perform additional actions here, such as updating the database.
+
+  const toggleFavoriteInDatabase = (userId, flowerId) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'UPDATE users SET flower_id_favourite = ? WHERE id = ?',
+        [flowerId, userId],
+        () => console.log(`Избранное для цветка с id ${flowerId} и пользователя с id ${userId} обновлено успешно`),
+        (error) => console.error(`Ошибка при обновлении избранного для цветка с id ${flowerId} и пользователя с id ${userId}: `, error)
+      );
+    });
+  };
+
+  
+
+  const toggleFavorite = (userId, flowerId) => {
+    const newFavouriteStates = { ...favouriteStates, [flowerId]: !favouriteStates[flowerId] };
+    setFavouriteStates(newFavouriteStates);
+    toggleFavoriteInDatabase(userId, flowerId);
   };
 
   const groupData = (data, itemsPerGroup) => {
@@ -37,7 +59,8 @@ const FlowerShop = () => {
         <Image style={{ width: 180, height: 180, resizeMode: 'cover', borderRadius: 15 }} source={item.image} />
 
         <TouchableOpacity
-          onPress={() => toggleFavourite(id)}
+          onPress={() => toggleFavorite(userId, id)}
+
           style={[
             s`absolute top-2 right-2`,
             {

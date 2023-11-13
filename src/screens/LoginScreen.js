@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity,Button } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 import {s} from 'react-native-wind';
@@ -10,11 +10,29 @@ const db = SQLite.openDatabase({
   location: 'Azalea',
 });
 
+export let userId = null;
+
 const LoginScreen = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigationLogin = useNavigation();
+
+  const initializeDatabase = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, flower_id_favourite TEXT, Cart_id Text);',
+        [],
+        () => console.log('Таблица users создана успешно'),
+        (error) => console.error('Ошибка при создании таблицы users: ', error)
+      );
+    });
+  };
+
+  useEffect(() => {
+    // Проверяем наличие базы данных и создаем ее при необходимости.
+    initializeDatabase();
+  }, []);
 
   const handleLogin = () => {
     db.transaction((tx) => {
@@ -24,7 +42,7 @@ const LoginScreen = ({ navigation }) => {
         (tx, results) => {
           if (results.rows.length > 0) {
             console.log('Вход выполнен успешно');
-            // Перенаправление на профиль или другую страницу после успешного входа.
+            userId = username;
             navigationLogin.navigate('Профиль', {username});
           } else {
             alert('Неверное имя пользователя или пароль');
