@@ -12,6 +12,7 @@ import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
+import ProductCard from '../screens/ProductCard';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -20,6 +21,7 @@ const MainNavPage = () => (
   <NavigationContainer independent={true}>
     <Stack.Navigator initialRouteName="FlowerShop">
       <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ProductCard" component={ProductCard} options={{ headerShown: false }} />
       <Stack.Screen name="Категория" options={{ headerShown: false }}> 
         {({ route, navigation }) => (
           <CategoryPageMain route={route} navigation={navigation} />

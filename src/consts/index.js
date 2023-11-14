@@ -66,6 +66,9 @@ export const FlowerData = [
         require('../assets/bouquet/1684459872_7776686.jpg'),
         require('../assets/bouquet/1684459872_24632873.jpg'),
         require('../assets/bouquet/1684459872_60935330.jpg'),
+        require('../assets/bouquet/1680261311_64021435.jpg'),
+        require('../assets/bouquet/1680261312_19223390.jpg'),
+        require('../assets/bouquet/1680261312_48246411.jpg'),
       ],
       rating: '4.4'
     },

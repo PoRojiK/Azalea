@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import SQLite from 'react-native-sqlite-storage';
 import userId from '../screens/LoginScreen';
 
+
 const db = SQLite.openDatabase({
   name: 'users.db',
   location: 'Azalea',
@@ -19,7 +20,7 @@ const FlowerShop = (userId) => {
   const toggleFavoriteInDatabase = (userId, flowerId) => {
     db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE users SET flower_id_favourite = ? WHERE id = ?',
+        'UPDATE users SET flower_id_favourite = ? WHERE username = ?',
         [flowerId, userId],
         () => console.log(`Избранное для цветка с id ${flowerId} и пользователя с id ${userId} обновлено успешно`),
         (error) => console.error(`Ошибка при обновлении избранного для цветка с id ${flowerId} и пользователя с id ${userId}: `, error)
@@ -45,6 +46,7 @@ const FlowerShop = (userId) => {
     const id = item.id
     return (
       <TouchableOpacity
+        onPress={() => navigationMain.navigate('ProductCard', { item })}
         style={{
           margin: 8,
           backgroundColor: 'white',
