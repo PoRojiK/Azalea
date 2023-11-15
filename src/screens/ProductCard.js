@@ -1,142 +1,133 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-  Dimensions,
-  Modal,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {AntDesign} from '@expo/vector-icons';
-import {s} from 'react-native-wind';
-import {
-  PanGestureHandler,
-  State,
-  GestureHandlerRootView,
-} from 'react-native-gesture-handler';
+import React, { useState, useCallback } from 'react';
+import { View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import { s } from 'react-native-wind';
 
-const ProductCard = ({route}) => {
-  const {item} = route.params;
+const ProductCard = ({ route }) => {
+  const { item } = route.params;
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [modalVisible, setModalVisible] = useState(true);
 
-  const hideModal = () => {
-    setModalVisible(false);
-    // Дополнительные действия при закрытии модального окна
-  };
+  const renderImage = ({ item: image, index }) => (
+    <Image
+      source={image}
+      style={{ width: 391, height: 391, borderRadius: 20 }}
+    />
+  );
 
-  const handleGestureEvent = event => {
-    if (
-      event.nativeEvent.translationY > 50 &&
-      event.nativeEvent.state === State.ACTIVE
-    ) {
-      hideModal();
-    }
-  };
-  const onViewableItemsChanged = ({ viewableItems }) => {
-    if (viewableItems.length > 0) {
-      // Получите индекс первого видимого элемента и установите текущий индекс
-      setCurrentIndex(viewableItems[0].index);
-    }
-  };
-  const renderImage = ({ item: image,index  }) => (
-    <Image source={image} style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').width, borderRadius: 15 }} />
+  const renderThumbnail = ({ item: image, index }) => (
+    <TouchableOpacity
+      key={index.toString()}
+      onPress={() => {
+        setCurrentIndex(index);
+        console.log('Индекс миниатюры:', index);
+      }}
+      style={{
+        width: 80,
+        height: 80,
+        borderRadius: 10,
+        marginHorizontal: 5,
+        backgroundColor: index === currentIndex ? 'blue' : 'gray',
+      }}
+    >
+      <Image
+        source={image}
+        style={{
+          flex: 1,
+          width: 80,
+          height: 80,
+          borderRadius: 10,
+          resizeMode: 'cover',
+          opacity: index === currentIndex ? 1 : 0.5,
+          backgroundColor: 'white',
+        }}
+      />
+    </TouchableOpacity>
+  );
+
+  const handleScroll = useCallback(
+    (event) => {
+      const newCurrentIndex = Math.floor(
+        event.nativeEvent.contentOffset.x / 391
+      );
+      setCurrentIndex(newCurrentIndex);
+      
+      console.log('Основной индекс фото:', newCurrentIndex);
+    },
+    []
   );
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={hideModal}>
-        <PanGestureHandler onGestureEvent={handleGestureEvent}>
-          <ScrollView>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={[s`absolute top-4 left-4`, { zIndex: 1, borderRadius: 20, padding: 10, backgroundColor: 'white' }]}>
-              <AntDesign name="left" size={20} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={[s`absolute top-4 right-4`, { borderRadius: 20, padding: 10, backgroundColor: 'white', zIndex: 1 }]}>
-              <AntDesign name={'heart'} size={18} color="red" />
-            </TouchableOpacity>
+    <ScrollView style={{ flex: 1 }}>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={[
+          s`absolute top-4 left-4`,
+          { zIndex: 1, borderRadius: 20, padding: 10, backgroundColor: 'white' },
+        ]}
+      >
+        <AntDesign name="left" size={20} color="black" />
+      </TouchableOpacity>
 
-            <FlatList
+      <TouchableOpacity
+        style={[
+          s`absolute top-4 right-4`,
+          { borderRadius: 20, padding: 10, backgroundColor: 'white', zIndex: 1 },
+        ]}
+      >
+        <AntDesign name={'heart'} size={18} color="red" />
+      </TouchableOpacity>
+
+      <FlatList
         data={item.images}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={(data) => renderImage(data, currentIndex, setCurrentIndex)}
-        onMomentumScrollEnd={(event) =>
-          setCurrentIndex(Math.floor(event.nativeEvent.contentOffset.x / Dimensions.get('window').width))
-        }
+        renderItem={renderImage}
+        onMomentumScrollEnd={handleScroll}
       />
 
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-        {item.images.map((_, index) => (
-          <View
-            key={index.toString()}
-            style={{
-              width: 8,
-              height: 8,
-              borderRadius: 4,
-              marginHorizontal: 4,
-              backgroundColor: index === currentIndex ? 'blue' : 'gray',
-            }}
-          />
-        ))}
+        <FlatList
+          data={item.images}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={renderThumbnail}
+        />
       </View>
-            <View style={{ alignItems: 'center' }}>
-              <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'black', textAlign: 'center', marginBottom: 10 }}>{item.name}</Text>
-              <Text style={{ fontSize: 18, color: 'black', marginBottom: 10 }}>{item.price} ₽</Text>
-            </View>
 
-            <View style={{paddingHorizontal: 20, marginTop: 20}}>
-              <Text
-                style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>
-                Изображения:
-              </Text>
-            </View>
+      <View style={{ alignItems: 'center', paddingHorizontal: 20 }}>
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'black', textAlign: 'center', marginBottom: 10 }}>
+          {item.name}
+        </Text>
+        <Text style={{ fontSize: 18, color: 'black', marginBottom: 10 }}>
+          {item.price} ₽
+        </Text>
 
-            <View style={{paddingHorizontal: 20}}>
-              <Text style={{fontSize: 16, marginBottom: 10}}>
-                {item.description}
-              </Text>
-              <Text
-                style={{fontSize: 16, fontWeight: 'bold', marginBottom: 10}}>
-                Характеристики:
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginBottom: 5,
-                }}>{`Категория: ${item.category}`}</Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginBottom: 5,
-                }}>{`Время доставки: ${item.deliveryTime}`}</Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  marginBottom: 5,
-                }}>{`Рейтинг: ${item.rating}`}</Text>
-              {/* Add more characteristics as needed */}
-            </View>
+        <Text style={{ fontSize: 16, color: 'black', marginBottom: 10 }}>
+          {item.description}
+        </Text>
 
-            <View style={{paddingHorizontal: 20, marginTop: 20}}>
-              <Text
-                style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>
-                Состав:
-              </Text>
-              <Text style={{fontSize: 16, marginBottom: 5}}>
-                {item.structure}
-              </Text>
-              {/* Add more details about the composition */}
-            </View>
-          </ScrollView>
-        </PanGestureHandler>
-      </Modal>
-    </GestureHandlerRootView>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', color: 'black', marginBottom: 10 }}>
+          Характеристики:
+        </Text>
+        <Text style={{ fontSize: 16, marginBottom: 5, color: 'black' }}>{`Категория: ${item.category}`}</Text>
+        <Text style={{ fontSize: 16, marginBottom: 5, color: 'black' }}>{`Время доставки: ${item.deliveryTime}`}</Text>
+        <Text style={{ fontSize: 16, marginBottom: 5, color: 'black' }}>{`Рейтинг: ${item.rating}`}</Text>
+      </View>
+
+      <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'black', marginBottom: 10 }}>
+          Состав:
+        </Text>
+        <Text style={{ fontSize: 16, color: 'black', marginBottom: 5 }}>
+          {item.structure}
+        </Text>
+      </View>
+    </ScrollView>
   );
 };
 
