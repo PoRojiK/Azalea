@@ -16,44 +16,39 @@ import ProductCard from '../screens/ProductCard';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 const MainNavPage = () => (
-  <NavigationContainer independent={true}>
-    <Stack.Navigator initialRouteName="FlowerShop">
-      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ProductCard" component={ProductCard} options={{ headerShown: false }} />
-      <Stack.Screen name="Категория" options={{ headerShown: false }}> 
-        {({ route, navigation }) => (
-          <CategoryPageMain route={route} navigation={navigation} />
-        )}
-      </Stack.Screen>
-    </Stack.Navigator>
-  </NavigationContainer>
+  <Stack.Navigator initialRouteName="FlowerShop">
+    <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="ProductCard" component={ProductCard} options={{ headerShown: false }} />
+    <Stack.Screen name="Категория" options={{ headerShown: false }}> 
+      {({ route, navigation }) => (
+        <CategoryPageMain route={route} navigation={navigation} />
+      )}
+    </Stack.Screen>
+  </Stack.Navigator>
 );
 
 const ProfileNav = () => (
-  <NavigationContainer independent={true}>
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Вход в аккаунт"
-        component={LoginScreen}
-        options={{
-          cardStyle: { backgroundColor: 'transparent' },
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen
-        name="Регистрация"
-        component={RegistrationScreen}
-        options={{
-          headerShown: false,
-          cardStyle: { backgroundColor: 'transparent' },
-          headerTransparent: true,
-        }}
-      />
-      <Stack.Screen name="Профиль" component={ProfileScreen} options={{ headerShown: false }} />
-    </Stack.Navigator>
-  </NavigationContainer>
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Вход в аккаунт"
+      component={LoginScreen}
+      options={{
+        cardStyle: { backgroundColor: 'transparent' },
+        headerTransparent: true,
+      }}
+    />
+    <Stack.Screen
+      name="Регистрация"
+      component={RegistrationScreen}
+      options={{
+        headerShown: false,
+        cardStyle: { backgroundColor: 'transparent' },
+        headerTransparent: true,
+      }}
+    />
+    <Stack.Screen name="Профиль" component={ProfileScreen} options={{ headerShown: false }} />
+  </Stack.Navigator>
 );
 
 const AppNavigation = () => (

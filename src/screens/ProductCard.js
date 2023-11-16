@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback,useRef } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,7 +8,8 @@ const ProductCard = ({ route }) => {
   const { item } = route.params;
   const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [selectedQuantity, setSelectedQuantity] = useState(1); 
+  const thumbnailListRef = useRef(null);
   const renderImage = ({ item: image, index }) => (
     <Image
       source={image}
@@ -18,10 +19,8 @@ const ProductCard = ({ route }) => {
 
   const renderThumbnail = ({ item: image, index }) => (
     <TouchableOpacity
-      key={index.toString()}
       onPress={() => {
-        setCurrentIndex(index);
-        console.log('Индекс миниатюры:', index);
+        handleScrollThumbnail(index);
       }}
       style={{
         width: 80,
@@ -46,17 +45,16 @@ const ProductCard = ({ route }) => {
     </TouchableOpacity>
   );
 
-  const handleScroll = useCallback(
-    (event) => {
-      const newCurrentIndex = Math.floor(
-        event.nativeEvent.contentOffset.x / 391
-      );
-      setCurrentIndex(newCurrentIndex);
-      
-      console.log('Основной индекс фото:', newCurrentIndex);
-    },
-    []
-  );
+  const handleScroll = useCallback((event) => {
+    const newCurrentIndex = Math.floor(event.nativeEvent.contentOffset.x / 390);
+    setCurrentIndex(newCurrentIndex);
+  }, []);
+
+  const handleScrollThumbnail = (index) => {
+    setCurrentIndex(index);
+    thumbnailListRef.current.scrollToIndex({ animated: true, index });
+  };
+
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -80,6 +78,7 @@ const ProductCard = ({ route }) => {
       </TouchableOpacity>
 
       <FlatList
+        ref={thumbnailListRef}
         data={item.images}
         horizontal
         pagingEnabled
@@ -103,9 +102,6 @@ const ProductCard = ({ route }) => {
         <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'black', textAlign: 'center', marginBottom: 10 }}>
           {item.name}
         </Text>
-        <Text style={{ fontSize: 18, color: 'black', marginBottom: 10 }}>
-          {item.price} ₽
-        </Text>
 
         <Text style={{ fontSize: 16, color: 'black', marginBottom: 10 }}>
           {item.description}
@@ -126,6 +122,41 @@ const ProductCard = ({ route }) => {
         <Text style={{ fontSize: 16, color: 'black', marginBottom: 5 }}>
           {item.structure}
         </Text>
+      </View>
+
+      <View>
+      <View 
+      style={[
+        s`absolute bottom-4 left-4 items-center`, // Updated to bottom right
+        { borderRadius: 20, padding: 10, backgroundColor: 'white',flexDirection: 'row', justifyContent: 'space-between', marginTop: 10},
+      ]}>
+        {/* Minus sign for decreasing quantity */}
+        <TouchableOpacity
+          onPress={() => setSelectedQuantity(selectedQuantity > 1 ? selectedQuantity - 1 : 1)}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <Text style={{ fontSize: 20, color: 'black' }}>-</Text>
+        </TouchableOpacity>
+        {/* Display the selected quantity */}
+        <Text style={{ fontSize: 20, color: 'black' }}>{selectedQuantity}</Text>
+        {/* Plus sign for increasing quantity */}
+        <TouchableOpacity
+          onPress={() => setSelectedQuantity(selectedQuantity + 1)}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <Text style={{ fontSize: 20, color: 'black' }}>+</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Move the price to the bottom right */}
+      <TouchableOpacity
+        style={[
+          s`absolute bottom-4 right-4`, // Updated to bottom right
+          { borderRadius: 20, padding: 10, backgroundColor: 'white'},
+        ]}
+      >
+        <Text style={{ fontSize: 18, color: 'black' }}>Добавить {(Number(item.price.replace(/\s/, ''))  * Number(selectedQuantity)).toLocaleString()} ₽</Text>
+      </TouchableOpacity>
       </View>
     </ScrollView>
   );
