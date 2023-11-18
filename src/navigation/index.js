@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useRoute} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,19 +14,23 @@ import HomeScreen from '../screens/HomeScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import ProductCard from '../screens/ProductCard';
 
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const MainNavPage = () => (
-  <Stack.Navigator initialRouteName="FlowerShop">
-    <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
-    <Stack.Screen name="ProductCard" component={ProductCard} options={{ headerShown: false }} />
-    <Stack.Screen name="Категория" options={{ headerShown: false }}> 
-      {({ route, navigation }) => (
-        <CategoryPageMain route={route} navigation={navigation} />
-      )}
-    </Stack.Screen>
-  </Stack.Navigator>
-);
+const MainNavPage = () => {
+  return (
+    <Stack.Navigator initialRouteName="FlowerShopNav">
+      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ProductCard" component={ProductCard} options={{ headerShown: false }} />
+      <Stack.Screen name="Категория" options={{ headerShown: false }}> 
+        {({ route, navigation }) => (
+          <CategoryPageMain route={route} navigation={navigation} />
+        )}
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
+};
+
 
 const ProfileNav = () => (
   <Stack.Navigator>
@@ -54,7 +58,7 @@ const ProfileNav = () => (
 const AppNavigation = () => (
   <NavigationContainer>
     <Tab.Navigator
-      initialRouteName="Главная"
+      initialRouteName="Main"
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',

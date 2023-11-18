@@ -79,10 +79,11 @@ const FlowerShop = (userId) => {
           {item.name}
         </Text>
 
-        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
-          <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1, justifyContent: 'flex-end', paddingHorizontal: 10, marginBottom: 5 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <MaterialIcons name="star" size={18} color="orange" />
-            <Text style={{ color: 'black' }}>{item.rating}</Text>
+            <Text style={{ marginLeft: 5, color: 'black' }}>{item.rating}</Text>
           </View>
           <TouchableOpacity
             style={{
@@ -98,6 +99,7 @@ const FlowerShop = (userId) => {
             <Text style={{ color: 'black' }}>{item.price} ₽</Text>
           </TouchableOpacity>
         </View>
+      </View>
       </TouchableOpacity>
     );
   };

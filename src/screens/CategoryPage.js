@@ -25,6 +25,7 @@ const CategoryPageMain = ({ route }) => {
         {filteredData.map((item, id) => (
           
           <TouchableOpacity
+            onPress={() => navigation.navigate('ProductCard', { item })}
             style={{
               margin: 8,
               backgroundColor: 'white',
