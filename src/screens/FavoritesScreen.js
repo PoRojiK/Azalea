@@ -110,7 +110,7 @@ const FavouriteList = ({ navigation }) => {
           {renderItems()}
         </View>
       ) : (
-        <Text>No favorite items yet!</Text>
+        <Text style={{color:'black'}}>У вас пока нет избранных товаров,добавьте их!</Text>
       )}
     </ScrollView>
   );

@@ -47,22 +47,23 @@ const FlowerShop = (userId) => {
       const currentGroup = [];
       let itemsInCurrentCategory = 0;
   
-      while (currentIndex < data.length && itemsInCurrentCategory < itemsPerGroup) {
-        if (data[currentIndex]?.category === currentCategory) {
-          currentGroup.push(data[currentIndex]);
-          itemsInCurrentCategory++;
-        }
+      // Check if the current category is already present in groupedItems
+      const categoryAlreadyDisplayed = groupedItems.some(group => group.length > 0 && group[0]?.category === currentCategory);
+  
+      while (currentIndex < data.length && data[currentIndex]?.category === currentCategory && itemsInCurrentCategory < itemsPerGroup) {
+        currentGroup.push(data[currentIndex]);
         currentIndex++;
+        itemsInCurrentCategory++;
       }
   
-      if (currentGroup.length > 0) {
+      // Check if the current category was displayed in the inner loop and not already present
+      if (currentGroup.length > 0 && !categoryAlreadyDisplayed) {
         groupedItems.push(currentGroup);
       }
     }
   
     return groupedItems;
   };
-  
   
 
   const renderItem = ({ item }) => {

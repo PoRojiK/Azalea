@@ -16,6 +16,22 @@ const RegistrationScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const navigationLogin = useNavigation();
 
+  const initializeDatabase = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, flower_id_favourite TEXT, Cart_id Text);',
+        [],
+        () => console.log('Таблица users создана успешно'),
+        (error) => console.error('Ошибка при создании таблицы users: ', error)
+      );
+    });
+  };
+
+  useEffect(() => {
+    // Проверяем наличие базы данных и создаем ее при необходимости.
+    initializeDatabase();
+  }, []);
+
   const handleRegister = () => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -32,7 +48,7 @@ const RegistrationScreen = ({ navigation }) => {
                 (tx, results) => {
                   if (results.rowsAffected > 0) {
                     console.log('Пользователь успешно зарегистрирован');
-                    navigationLogin.navigate('Профиль', {username});
+                    navigationLogin.navigate('СтраницаПользователя', {username});
                   } else {
                     alert('Ошибка регистрации');
                   }

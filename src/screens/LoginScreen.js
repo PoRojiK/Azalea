@@ -18,21 +18,6 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const navigationLogin = useNavigation();
 
-  const initializeDatabase = () => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, flower_id_favourite TEXT, Cart_id Text);',
-        [],
-        () => console.log('Таблица users создана успешно'),
-        (error) => console.error('Ошибка при создании таблицы users: ', error)
-      );
-    });
-  };
-
-  useEffect(() => {
-    // Проверяем наличие базы данных и создаем ее при необходимости.
-    initializeDatabase();
-  }, []);
 
   const handleLogin = () => {
     db.transaction((tx) => {
@@ -43,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
           if (results.rows.length > 0) {
             console.log('Вход выполнен успешно');
             userId = username;
-            navigationLogin.navigate('Профиль', {username});
+            navigationLogin.navigate('СтраницаПользователя', {username});
           } else {
             alert('Неверное имя пользователя или пароль');
           }

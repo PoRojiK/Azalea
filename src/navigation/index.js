@@ -51,7 +51,7 @@ const ProfileNav = () => (
         headerTransparent: true,
       }}
     />
-    <Stack.Screen name="Профиль" component={ProfileScreen} options={{ headerShown: false }} />
+    <Stack.Screen name="СтраницаПользователя" component={ProfileScreen} options={{ headerShown: false }} />
   </Stack.Navigator>
 );
 
