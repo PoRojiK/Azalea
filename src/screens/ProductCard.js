@@ -10,9 +10,12 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {AntDesign,FontAwesome} from '@expo/vector-icons';
 import {s} from 'react-native-wind';
+import { useFavorite } from '../databases/FavoriteContext';
+
 
 const ProductCard = ({navigation, route}) => {
   const {item} = route.params;
+  const { favouriteStates, selectedFavorites, toggleFavorite } = useFavorite();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const thumbnailListRef = useRef(null);
@@ -57,7 +60,7 @@ const ProductCard = ({navigation, route}) => {
     setCurrentIndex(index);
     thumbnailListRef.current.scrollToIndex({animated: true, index});
   };
-  
+  const id = item.id;
 
   return (
     <View style={{flex: 1}}>
@@ -77,16 +80,17 @@ const ProductCard = ({navigation, route}) => {
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={() => toggleFavorite(id)}
           style={[
             s`absolute top-4 right-4`,
             {
               borderRadius: 20,
               padding: 10,
-              backgroundColor: 'white',
+              backgroundColor: favouriteStates[id] ? 'red' : 'rgba(0,0,0,0.4)',
               zIndex: 1,
             },
           ]}>
-          <AntDesign name={'heart'} size={18} color="red" />
+          <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color="white" />
         </TouchableOpacity>
 
         <FlatList

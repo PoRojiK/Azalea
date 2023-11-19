@@ -6,6 +6,7 @@ import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import SQLite from 'react-native-sqlite-storage';
 import userId from '../screens/LoginScreen';
+import { useFavorite } from '../databases/FavoriteContext';
 
 
 const db = SQLite.openDatabase({
@@ -14,26 +15,27 @@ const db = SQLite.openDatabase({
 });
 
 const FlowerShop = (userId) => {
-  const [favouriteStates, setFavouriteStates] = useState({});
+  const { favouriteStates, selectedFavorites, toggleFavorite } = useFavorite();
   const itemsPerGroup = 6;
 
   const toggleFavoriteInDatabase = (userId, flowerId) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'UPDATE users SET flower_id_favourite = ? WHERE username = ?',
-        [flowerId, userId],
-        () => console.log(`Избранное для цветка с id ${flowerId} и пользователя с id ${userId} обновлено успешно`),
-        (error) => console.error(`Ошибка при обновлении избранного для цветка с id ${flowerId} и пользователя с id ${userId}: `, error)
-      );
-    });
-  };
-
-  
-
-  const toggleFavorite = (flowerId) => {
-    const newFavouriteStates = { ...favouriteStates, [flowerId]: !favouriteStates[flowerId] };
-    setFavouriteStates(newFavouriteStates);
-    toggleFavoriteInDatabase(flowerId);
+    if (userId) {
+      // User is logged in, update the database
+      db.transaction((tx) => {
+        tx.executeSql(
+          'UPDATE users SET flower_id_favourite = ? WHERE username = ?',
+          [flowerId, userId],
+          () => console.log(`Избранное для цветка с id ${flowerId} и пользователя с id ${userId} обновлено успешно`),
+          (error) => console.error(`Ошибка при обновлении избранного для цветка с id ${flowerId} и пользователя с id ${userId}: `, error)
+        );
+      });
+    } else {
+      // User is not logged in, handle favorite status for the current session
+      // You can use local state, context, or any other mechanism to manage session-based favorites
+      const newFavouriteStates = { ...favouriteStates, [flowerId]: !favouriteStates[flowerId] };
+      setFavouriteStates(newFavouriteStates);
+      console.log(`Избранное для цветка с id ${flowerId} сохранено в текущей сессии`);
+    }
   };
 
   const groupData = (data, itemsPerGroup) => {
@@ -44,21 +46,16 @@ const FlowerShop = (userId) => {
       const currentCategory = data[currentIndex]?.category;
       const currentGroup = [];
       let itemsInCurrentCategory = 0;
-      let categoryDisplayed = false;
   
-      for (let i = 0; i < itemsPerGroup && currentIndex < data.length; i++) {
-        if (data[currentIndex]?.category === currentCategory && itemsInCurrentCategory < itemsPerGroup) {
+      while (currentIndex < data.length && itemsInCurrentCategory < itemsPerGroup) {
+        if (data[currentIndex]?.category === currentCategory) {
           currentGroup.push(data[currentIndex]);
-          currentIndex++;
           itemsInCurrentCategory++;
-        } else {
-          if (!categoryDisplayed) {
-            categoryDisplayed = true;
-          }
-          currentIndex++;
         }
+        currentIndex++;
       }
-      if (!categoryDisplayed) {
+  
+      if (currentGroup.length > 0) {
         groupedItems.push(currentGroup);
       }
     }
@@ -134,7 +131,7 @@ const FlowerShop = (userId) => {
 
   const renderCategory = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigationMain.navigate('Категория', { category: item[0].category, item,favouriteStates,toggleFavorite})}
+      onPress={() => navigationMain.navigate('Категория', { category: item[0].category, item })}
       style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
     >
       <Text style={{ fontSize: 20, fontWeight: 'bold', marginHorizontal: 10, color: 'black' }}>{item[0].category}</Text>

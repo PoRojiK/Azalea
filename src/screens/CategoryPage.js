@@ -4,12 +4,13 @@ import { FlowerData } from '../consts/index';
 import { s } from 'react-native-wind';
 import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useFavorite } from '../databases/FavoriteContext';
 
 
 const CategoryPageMain = ({ route }) => {
   const navigation = useNavigation();
-  const { category,item,favouriteStates,toggleFavorite  } = route.params;
-
+  const { category} = route.params;
+  const { favouriteStates, selectedFavorites, toggleFavorite } = useFavorite();
   const filteredData = FlowerData.filter((item) => item.category === category);
 
   return (
@@ -22,7 +23,7 @@ const CategoryPageMain = ({ route }) => {
       </View>
 
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-        {filteredData.map((item, id) => (
+        {filteredData.map((item) => (
           
           <TouchableOpacity
             onPress={() => navigation.navigate('ProductCard', { item })}
@@ -41,18 +42,18 @@ const CategoryPageMain = ({ route }) => {
 
                 
             <TouchableOpacity
-              onPress={() => toggleFavorite(id)}
+              onPress={() => toggleFavorite(item.id)}
 
               style={[
                 s`absolute top-2 right-2`,
                 {
                   borderRadius: 20,
                   padding: 10,
-                  backgroundColor: favouriteStates[id] ? 'red' : 'rgba(0,0,0,0.4)',
+                  backgroundColor: favouriteStates[item.id] ? 'red' : 'rgba(0,0,0,0.4)',
                 },
               ]}
             >
-              <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color="white" />
+              <AntDesign name={favouriteStates[item.id] ? 'heart' : 'hearto'} size={18} color="white" />
             </TouchableOpacity>
 
 

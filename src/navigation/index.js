@@ -85,7 +85,7 @@ const AppNavigation = () => (
       })}
     >
       <Tab.Screen name="Главная" component={MainNavPage} options={{ headerShown: false }} />
-      <Tab.Screen name="Избранное" component={FavoritesScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Избранное" component={FavoritesScreen} options={{ headerShown: true }} />
       <Tab.Screen name="Мои события" component={EventsScreen} options={{ headerShown: true }} />
       <Tab.Screen name="Профиль" component={ProfileNav} options={{ headerShown: false }} />
     </Tab.Navigator>
