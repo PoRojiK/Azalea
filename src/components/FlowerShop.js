@@ -30,17 +30,43 @@ const FlowerShop = (userId) => {
 
   
 
-  const toggleFavorite = (userId, flowerId) => {
+  const toggleFavorite = (flowerId) => {
     const newFavouriteStates = { ...favouriteStates, [flowerId]: !favouriteStates[flowerId] };
     setFavouriteStates(newFavouriteStates);
-    toggleFavoriteInDatabase(userId, flowerId);
+    toggleFavoriteInDatabase(flowerId);
   };
 
   const groupData = (data, itemsPerGroup) => {
-    return Array.from({ length: Math.ceil(data.length / itemsPerGroup) }, (_, i) =>
-      data.slice(i * itemsPerGroup, i * itemsPerGroup + itemsPerGroup)
-    );
+    const groupedItems = [];
+    let currentIndex = 0;
+  
+    while (currentIndex < data.length) {
+      const currentCategory = data[currentIndex]?.category;
+      const currentGroup = [];
+      let itemsInCurrentCategory = 0;
+      let categoryDisplayed = false;
+  
+      for (let i = 0; i < itemsPerGroup && currentIndex < data.length; i++) {
+        if (data[currentIndex]?.category === currentCategory && itemsInCurrentCategory < itemsPerGroup) {
+          currentGroup.push(data[currentIndex]);
+          currentIndex++;
+          itemsInCurrentCategory++;
+        } else {
+          if (!categoryDisplayed) {
+            categoryDisplayed = true;
+          }
+          currentIndex++;
+        }
+      }
+      if (!categoryDisplayed) {
+        groupedItems.push(currentGroup);
+      }
+    }
+  
+    return groupedItems;
   };
+  
+  
 
   const renderItem = ({ item }) => {
     const id = item.id
@@ -61,7 +87,7 @@ const FlowerShop = (userId) => {
         <Image style={{ width: 180, height: 180, resizeMode: 'cover', borderRadius: 15 }} source={item.image} />
 
         <TouchableOpacity
-          onPress={() => toggleFavorite(userId, id)}
+          onPress={() => toggleFavorite(id)}
 
           style={[
             s`absolute top-2 right-2`,
@@ -108,7 +134,7 @@ const FlowerShop = (userId) => {
 
   const renderCategory = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigationMain.navigate('Категория', { category: item[0].category, item })}
+      onPress={() => navigationMain.navigate('Категория', { category: item[0].category, item,favouriteStates,toggleFavorite})}
       style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
     >
       <Text style={{ fontSize: 20, fontWeight: 'bold', marginHorizontal: 10, color: 'black' }}>{item[0].category}</Text>
@@ -122,14 +148,16 @@ const FlowerShop = (userId) => {
 
   return (
     <ScrollView>
-      {groupedData.map((group, id) => (
-        <View key={`group_${id}`}>
-          {id % itemsPerGroup === 0 ? renderCategory({ item: group, id }) : renderCategory({ item: group, id })}
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
-            {group.map((flower, flowerid) => renderItem({ item: flower }))}
+      {groupedData.map((group, id) => {
+        return (
+          <View key={`group_${id}`}>
+            {renderCategory({ item: group })}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+              {group.map((flower) => renderItem({ item: flower }))}
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </ScrollView>
   );
 };

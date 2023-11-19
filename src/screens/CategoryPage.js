@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const CategoryPageMain = ({ route }) => {
   const navigation = useNavigation();
-  const { category,item } = route.params;
+  const { category,item,favouriteStates,toggleFavorite  } = route.params;
 
   const filteredData = FlowerData.filter((item) => item.category === category);
 
@@ -39,40 +39,46 @@ const CategoryPageMain = ({ route }) => {
           >
             <Image style={{ width: '100%', height: 180, resizeMode: 'cover', borderRadius: 15 }} source={item.image} />
 
+                
             <TouchableOpacity
+              onPress={() => toggleFavorite(id)}
+
               style={[
                 s`absolute top-2 right-2`,
                 {
                   borderRadius: 20,
                   padding: 10,
-                  backgroundColor: 'rgba(0,0,0,0.4)',
+                  backgroundColor: favouriteStates[id] ? 'red' : 'rgba(0,0,0,0.4)',
                 },
               ]}
             >
+              <AntDesign name={favouriteStates[id] ? 'heart' : 'hearto'} size={18} color="white" />
             </TouchableOpacity>
+
 
             <Text style={{ fontWeight: 'bold', marginTop: 10, marginHorizontal: 10, fontSize: 12, color: 'black', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {item.name}
             </Text>
-
-            <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, justifyContent: 'space-between' }}>
-              <View style={{ flexDirection: 'row' }}>
-                <MaterialIcons name="star" size={18} color="orange" />
-                <Text style={{ color: 'black' }}>{item.rating}</Text>
+            <View style={{ flex: 1, justifyContent: 'flex-end', paddingHorizontal: 10, marginBottom: 5 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MaterialIcons name="star" size={18} color="orange" />
+                  <Text style={{ marginLeft: 5, color: 'black' }}>{item.rating}</Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#f2f2f2',
+                    padding: 4,
+                    borderRadius: 5,
+                    marginLeft: 10,
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    color: 'black',
+                  }}
+                >
+                  <Text style={{ color: 'black' }}>{item.price} ₽</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#f2f2f2',
-                  padding: 4,
-                  borderRadius: 5,
-                  marginLeft: 10,
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                  color: 'black',
-                }}
-              >
-                <Text style={{ color: 'black' }}>{item.price} ₽</Text>
-              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         ))}
