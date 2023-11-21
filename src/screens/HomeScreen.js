@@ -17,16 +17,24 @@ import Banners from '../components/Banner';
 import FlowerShop from '../components/FlowerShop';
 import { MaterialIcons } from "@expo/vector-icons";
 
+
 export default function HomeScreen() {
   const [isAddressMenuVisible, setAddressMenuVisible] = useState(false);
   const [address, setAddress] = useState(''); // Состояние для адреса
-  const [deliveryTime, setDeliveryTime] = useState(''); // Состояние для времени доставки
+  const [deliveryDate, setDeliveryDate] = useState(new Date()); // Set initial date to the current date
+  const [deliveryTime, setDeliveryTime] = useState(new Date()); // Set initial time to the current time
+  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
+  const [isAsSoonAsPossibleChecked, setAsSoonAsPossibleChecked] = useState(false);
+  const [showDateTimePickerModal, setShowDateTimePickerModal] = useState(false);
+
 
   const handleSaveAddress = () => {
-    // Здесь вы можете выполнить логику сохранения адреса и времени доставки
-    // Например, отправить на сервер или обновить состояние вашего приложения
-    setAddressMenuVisible(false); // Закрываем меню после сохранения
+    console.log('Address:', address);
+    console.log('Delivery Date:', isAsSoonAsPossibleChecked ? 'As soon as possible' : deliveryDate);
+    console.log('Delivery Time:', deliveryTime);
+    setAddressMenuVisible(false);
   };
+
   return (
     <ScrollView style={s`flex-1 bg-white`}>
       {/* statusbar */}
@@ -40,25 +48,61 @@ export default function HomeScreen() {
           <Modal
             visible={isAddressMenuVisible}
             animationType="slide"
-            transparent={true}>
-            <View style={[s`flex-1 justify-end items-center`,{backgroundColor: "rgba(0, 0, 0, 0.5)",TextColor:"black"}]}>
-              <View style={s`bg-white p-20 rounded-tl-2xl rounded-tr-2xl shadow-lg w-full`}>
-                <Text>Введите адрес доставки:</Text>
+            transparent={true}
+          >
+            <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+              <View style={{ backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, width: '100%' }}>
+                <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 18, marginBottom: 10 }}>Адрес доставки</Text>
                 <TextInput
-                  style={s`border-b-1 border-gray-300 mb-10`}
-                  placeholder="Адрес"
+                  style={{ borderBottomWidth: 1, color: 'black', borderBottomColor: 'gray', marginBottom: 10 }}
+                  placeholder="Новый адрес"
                   value={address}
                   onChangeText={text => setAddress(text)}
                 />
-                <Text>Выберите время доставки:</Text>
-                <TextInput
-                  style={s`border-b-1 border-gray-300 mb-10`}
-                  placeholder="Время доставки"
-                  placeholderTextColor="gray"
-                  color="black"
-                  value={deliveryTime}
-                  onChangeText={text => setDeliveryTime(text)}
-                />
+                <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 18, marginBottom: 10 }}>Время доставки</Text>
+                <View style={{ flexDirection: 'column', marginBottom: 10 }}>
+                  {/* Первый чекбокс и выбор даты */}
+                  
+                  <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, marginLeft: 8 }} onPress={() => setAsSoonAsPossibleChecked(!isAsSoonAsPossibleChecked)}>
+                    <MaterialIcons
+                      name={isAsSoonAsPossibleChecked ? "check-box" : "check-box-outline-blank"}
+                      size={24}
+                      color="black"
+                    />
+                    <Text style={{ marginLeft: 8, color: 'black' }}>Как можно скорее</Text>
+                  </TouchableOpacity>
+                  
+
+                  {/* Второй чекбокс */}
+                    <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8, marginLeft: 8 }} onPress={() => setShowDateTimePickerModal(true)}>
+                      <MaterialIcons
+                        name={showDateTimePickerModal ? "check-box" : "check-box-outline-blank"}
+                        size={24}
+                        color="black"
+                      />
+                    
+                    <Text style={{ marginLeft: 8, color: 'black' }}>Выбрать дату и время</Text>
+                    </TouchableOpacity>
+
+
+                  {/* Второй Modal для выбора даты и времени */}
+                  <Modal
+                    visible={showDateTimePickerModal}
+                    animationType="slide"
+                    transparent={true}
+                  >
+                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+                      <View style={{ backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, width: '100%' }}>
+                        <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 18, marginBottom: 10 }}>Выберите дату и время доставки</Text>
+                        
+                        {/* Добавьте здесь ваш компонент выбора даты и времени (например, кастомный компонент или встроенные компоненты React Native) */}
+                        
+                        <Button title="Сохранить" onPress={() => setShowDateTimePickerModal(false)} />
+                      </View>
+                    </View>
+                  </Modal>
+                </View>
+
                 <Button title="Сохранить" onPress={handleSaveAddress} />
               </View>
             </View>
