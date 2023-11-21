@@ -52,7 +52,7 @@ const ProductCard = ({navigation, route}) => {
   );
 
   const handleScroll = useCallback(event => {
-    const newCurrentIndex = Math.floor(event.nativeEvent.contentOffset.x / 390);
+    const newCurrentIndex = Math.floor(event.nativeEvent.contentOffset.x / 389);
     setCurrentIndex(newCurrentIndex);
   }, []);
 
@@ -201,6 +201,26 @@ const ProductCard = ({navigation, route}) => {
                 <Text style={{ fontSize: 16, color: 'black', marginBottom: 5 }}>{item.sizesy}</Text>
               </View>
             </>
+          )}
+        </View>
+
+        <View style={{ paddingHorizontal: 20, marginTop: 20, flex: 1 }}>
+          {item.weight && (
+            <>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: 'black',
+                  marginBottom: 10,
+                }}
+              >
+                Вес:
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ fontSize: 16, color: 'black', marginBottom: 5 }}>{item.weight}</Text>
+              </View>
+              </>
           )}
         </View>
 
