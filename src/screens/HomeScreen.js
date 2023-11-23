@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   Slider,
+  StyleSheet,
 } from 'react-native';
 import React, {useState} from 'react';
 import {s} from 'react-native-wind';
@@ -19,16 +20,12 @@ import Banners from '../components/Banner';
 import FlowerShop from '../components/FlowerShop';
 import { MaterialIcons,FontAwesome  } from "@expo/vector-icons";
 
-
+import {Picker} from '@react-native-picker/picker';
 
 
 export default function HomeScreen() {
   const [isAddressMenuVisible, setAddressMenuVisible] = useState(false);
 
-  const [deliveryDate, setDeliveryDate] = useState(new Date()); // Set initial date to the current date
-  const [deliveryTime, setDeliveryTime] = useState(new Date()); // Set initial time to the current time
-
-  const [showDatePickerModal, setShowDatePickerModal] = useState(false);
   const [isAsSoonAsPossibleChecked, setAsSoonAsPossibleChecked] = useState(false);
   const [showDateTimePickerModal, setShowDateTimePickerModal] = useState(false);
   const [selectedCoordinate, setSelectedCoordinate] = useState(null);
@@ -37,23 +34,61 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [addresses, setAddresses] = useState([]);
 
-  const [selectedDate, setSelectedDate] = useState(0);
-  const [selectedTime, setSelectedTime] = useState(8);
 
-  const handleDateChange = (value) => {
-    setSelectedDate(value);
+// -----------------------------
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState('8:00');
+  const [dates, setDates] = useState([]);
+  const [times, setTimes] = useState([]);
+  const [isTimeSelected, setIsTimeSelected] = useState(false);
+
+  const getNextSevenDays = () => {
+    const date = new Date();
+    const nextSevenDays = [];
+
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(date.getTime() + i * 24 * 60 * 60 * 1000);
+      nextSevenDays.push(currentDate);
+    }
+
+    return nextSevenDays;
   };
 
-  const handleTimeChange = (value) => {
-    setSelectedTime(value);
+  const generateTimeOptions = () => {
+    const currentHour = new Date().getHours();
+    const timeOptions = [];
+
+    for (let i = currentHour; i <= 23; i++) {
+      for (let j = 0; j <= 30; j += 30) {
+        const timeStr = `${i}:${j === 0 ? '00' : '30'}`;
+        timeOptions.push(timeStr);
+      }
+    }
+
+    return timeOptions;
   };
 
-  const calculateDate = () => {
-    const currentDate = new Date();
-    const selectedDate = new Date(currentDate);
-    selectedDate.setDate(currentDate.getDate() + Math.round(selectedDate));
-    return selectedDate.toDateString();
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
   };
+
+  const handleTimeChange = (time) => {
+    setSelectedTime(time);
+  };
+
+  useState(() => {
+    const nextSevenDays = getNextSevenDays();
+    setDates(nextSevenDays);
+    const timeOptions = generateTimeOptions();
+    setTimes(timeOptions);
+  }, []);
+
+  const formattedDateTime = selectedDate && selectedTime
+    ? `${selectedDate.toDateString()} ${selectedTime}`
+    : 'Выберите дату и время';
+
+// -----------------------------
+
 
   const isSelectedAddress = (address) => {
     return selectedCoordinate === address;
@@ -71,24 +106,14 @@ export default function HomeScreen() {
   };
 
   const handleSaveDeliveryTime = () => {
-    console.log('Address:', selectedCoordinate);
-    console.log('Delivery Date:', isAsSoonAsPossibleChecked ? 'Как можно скорее' : deliveryDate);
-    console.log('Delivery Time:', deliveryTime);
+    console.log('Адресс доставки:', selectedCoordinate);
+    console.log('Время и дата доставки:', isAsSoonAsPossibleChecked ? 'Как можно скорее' : selectedTime, selectedDate);
     setAddressMenuVisible(false);
   };
   const handleSaveAddress = () => {
-    // Сохраняет введенный адрес и закрывает модальное окно
     setModalVisible(false);
-    // Здесь вы можете добавить логику сохранения адреса
-    // Например, можно сохранить его в состоянии или передать обратно в родительский компонент.
     Alert.alert('Адрес сохранен:', address);
   };
-
-
-  const handleSelectAddressOnMap = () => {
-    setModalVisible(true);
-  };
-
 
   return (
     <ScrollView style={s`flex-1 bg-white`}>
@@ -283,25 +308,36 @@ export default function HomeScreen() {
                       Как можно скорее
                     </Text>
                   </TouchableOpacity>
-
+                        <TouchableOpacity
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: 8,
+                            marginLeft: 8,
+                          }}
+                          onPress={() => setIsTimeSelected(!isTimeSelected)}
+                        >
+                          <MaterialIcons
+                            name={
+                              isTimeSelected
+                                ? 'check-box'
+                                : 'check-box-outline-blank'
+                            }
+                            size={24}
+                            color="black"
+                          />
+                          <Text style={{ marginLeft: 8, color: 'black' }}>{formattedDateTime}</Text>
+                        </TouchableOpacity>
                   {/* Второй чекбокс */}
                   <TouchableOpacity
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
                       marginTop: 8,
-                      marginLeft: 8,
+                      marginLeft: 9,
                     }}
                     onPress={() => setShowDateTimePickerModal(true)}>
-                    <MaterialIcons
-                      name={
-                        showDateTimePickerModal
-                          ? 'check-box'
-                          : 'check-box-outline-blank'
-                      }
-                      size={24}
-                      color="black"
-                    />
+                    <MaterialIcons name="add" size={24} color="black" />
 
                     <Text style={{marginLeft: 8, color: 'black'}}>
                       Выбрать дату и время
@@ -337,30 +373,42 @@ export default function HomeScreen() {
                           }}>
                           Выберите дату и время доставки
                         </Text>
-                        <Text style={{color:'black'}}>Выбранная дата: {calculateDate()}</Text>
-                        <Slider
-                          style={{ width: 200, height: 40 }}
-                          minimumValue={0}
-                          maximumValue={6} // 6 days in a week
-                          step={1}
-                          value={selectedDate}
-                          onValueChange={handleDateChange}
-                        />
 
-                        {/* Slider for selecting time */}
-                        <Text style={{color:'black'}}>Выберите время: {selectedTime + 8}:00</Text>
-                        <Slider
-                          style={{ width: 200, height: 40 }}
-                          minimumValue={0}
-                          maximumValue={16} // 16 hours from 8 to 24
-                          step={1}
-                          value={selectedTime}
-                          onValueChange={handleTimeChange}
-                        />
-
-                        {/* Additional logic to display the selected date and time */}
-                        <Text style={{color:'black'}}>Выбранная дата: {calculateDate()}</Text>
-                        <Text style={{color:'black'}}>Выбранное время: {selectedTime + 8}:00</Text>
+                        <Text style={{
+                          fontWeight: 'bold',
+                          color: 'black',
+                          fontSize: 18,
+                          marginBottom: 20,
+                          marginTop: 8,
+                        }}>Выберите дату доставки</Text>
+                        <View style={{ flex: 1,marginBottom:20, alignItems: 'center', justifyContent: 'center' }}>
+                        
+                          <Picker
+                            selectedValue={selectedDate}
+                            style={{ height: 50, width: 300 }}
+                            onValueChange={(itemValue) => handleDateChange(itemValue)}>
+                            {dates.map((date, index) => (
+                              <Picker.Item key={index} label={date.toDateString()} value={date} />
+                            ))}
+                          </Picker>
+                        </View>
+                        <Text style={{
+                          fontWeight: 'bold',
+                          color: 'black',
+                          fontSize: 18,
+                          marginBottom: 20,
+                          marginTop: 8,
+                        }}>Выберите время доставки</Text>
+                      <View style={{ flex: 1,marginBottom:30,alignItems: 'center', justifyContent: 'center' }}>
+                        <Picker
+                          selectedValue={selectedTime}
+                          style={{ height: 50, width: 300 }}
+                          onValueChange={(itemValue) => handleTimeChange(itemValue)}>
+                          {times.map((time, index) => (
+                            <Picker.Item key={index} label={time} value={time} />
+                          ))}
+                        </Picker>
+                      </View>
 
                         {/* Picker for selecting time */}
 
@@ -416,7 +464,7 @@ export default function HomeScreen() {
               <View style={s`flex-row items-center`}>
                 <Text
                   style={[s`mr-0 text-s font-bold text-black`, {fontSize: 12}]}>
-                  Узнаем адрес у получателя
+                  {selectedCoordinate ? selectedCoordinate : "Узнаем адрес у получателя"}
                 </Text>
                 <View>
                   <MaterialIcons
@@ -476,3 +524,37 @@ export default function HomeScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  swiper: {
+    flex: 1,
+  },
+  slide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  dateText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  timeText: {
+    fontSize: 18,
+  },
+  selectedContainer: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectedText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+

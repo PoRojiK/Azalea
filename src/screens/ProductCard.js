@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useCallback, useRef, useEffect,useContext} from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,20 @@ import {useNavigation} from '@react-navigation/native';
 import {AntDesign,FontAwesome} from '@expo/vector-icons';
 import {s} from 'react-native-wind';
 import { useFavorite } from '../databases/FavoriteContext';
+import { CartContext } from '../databases/CartContext';
 
 
 const ProductCard = ({navigation, route}) => {
+
+  const { addToCart } = useContext(CartContext);
+
+  const handleAddToCart = () => {
+    addToCart(item, selectedQuantity);
+  };
+
+
   const {item} = route.params;
+
   const { favouriteStates, selectedFavorites, toggleFavorite } = useFavorite();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedQuantity, setSelectedQuantity] = useState(1);
@@ -261,6 +271,7 @@ const ProductCard = ({navigation, route}) => {
         </View>
         {/* Вывод цены справа */}
         <TouchableOpacity
+          onPress={handleAddToCart}
           style={[
             s`flex-row  absolute bottom-4 right-4`,
             {

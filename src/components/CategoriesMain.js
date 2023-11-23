@@ -4,15 +4,19 @@ import {s} from 'react-native-wind';
 import {RowData} from '../consts/index';
 const {firstRowCategories} = RowData();
 const {secondRowCategories} = RowData();
+import { useNavigation } from '@react-navigation/native';
 
 export default function Categories() {
+  const navigationMain = useNavigation();
   return (
     <View >
       {/* Первая строка */}
       <ScrollView horizontal contentContainerStyle={{paddingHorizontal: 8, marginTop: 8, justifyContent: "space-between", flexDirection: "row", flex: 1,}}>
-        {firstRowCategories.map((cat, index, name) => (
+        {firstRowCategories.map((cat, index, name,title) => (
           
-          <TouchableOpacity key={index} style={{marginRight: 4, flex: 1, backgroundColor: '#f2f2f2', borderRadius: 15, height:125}}>
+          <TouchableOpacity
+          onPress={() => navigationMain.navigate('Категория', { category: cat.category})} 
+          key={index} style={{marginRight: 4, flex: 1, backgroundColor: '#f2f2f2', borderRadius: 15, height:125}}>
             <View>
               <Text
                 style={[
@@ -41,7 +45,9 @@ export default function Categories() {
       {/* Вторая строка */}
       <ScrollView horizontal contentContainerStyle={{paddingHorizontal: 8, marginTop: 4, justifyContent: "space-between", flexDirection: "row", flex: 1,}}>
         {secondRowCategories.map((cat, index, name) => (
-          <TouchableOpacity key={index} style={{marginRight: 4, flex: 1, backgroundColor: '#f2f2f2', borderRadius: 15, height:115}}>
+          <TouchableOpacity
+          onPress={() => navigationMain.navigate('Категория', { category: cat.category})} 
+          key={index} style={{marginRight: 4, flex: 1, backgroundColor: '#f2f2f2', borderRadius: 15, height:115}}>
           <View>
             <Text
               style={[

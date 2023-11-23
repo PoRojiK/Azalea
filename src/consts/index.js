@@ -1,28 +1,38 @@
 export const CategoriesData = [
   {
+    index: 0,
     title: 'flower_basket',
     name: 'Подарки',
+    category: 'Цветы в коробке',
     image: require('../assets/images/flower_basket.png'),
   },
   {
+    index:1,
     title: 'author_flower',
     name: 'Авторские \nбукеты',
+    category: 'Авторские букеты',
     image: require('../assets/images/author_flower.png'),
   },
   {
+    index:2,
     title: 'roses',
     name: 'Монобукеты',
+    category: 'Монобукеты',
     image: require('../assets/images/roses.png'),
   },
 
   {
+    index:3,
     title: 'teddy',
     name: 'Мягкие\nигрушки',
+    category: 'Мягкие игрушки',
     image: require('../assets/images/teddy.png'),
   },
   {
+    index:4,
     title: 'cake',
     name: 'Вкусное',
+    category: 'Вкусное',
     image: require('../assets/images/cake.png'),
   },
 ];

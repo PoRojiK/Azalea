@@ -110,7 +110,9 @@ const FavouriteList = ({ navigation }) => {
           {renderItems()}
         </View>
       ) : (
-        <Text style={{color:'black'}}>У вас пока нет избранных товаров,добавьте их!</Text>
+        <View style={{ flexGrow: 1,paddingTop:320, flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ color: 'black', fontSize: 16 }}>У вас пока нет избранных товаров, добавьте их!</Text>
+      </View>
       )}
     </ScrollView>
   );

@@ -76,9 +76,9 @@ const AppNavigation = () => (
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === 'Главная') iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Мои события') iconName = focused ? 'calendar-sharp' : 'calendar-outline';
+          else if (route.name === 'Корзина') iconName = focused ? 'basket' : 'basket-outline';
           else if (route.name === 'Профиль') iconName = focused ? 'flower' : 'flower-outline';
-          else if (route.name === 'Избранное') iconName = focused ? 'heart-outline' : 'heart';
+          else if (route.name === 'Избранное') iconName = focused ?  'heart' : 'heart-outline';
 
           return <Ionicons name={iconName} size={24} color={color} />;
         },
@@ -86,7 +86,7 @@ const AppNavigation = () => (
     >
       <Tab.Screen name="Главная" component={MainNavPage} options={{ headerShown: false }} />
       <Tab.Screen name="Избранное" component={FavoritesScreen} options={{ headerShown: true }} />
-      <Tab.Screen name="Мои события" component={EventsScreen} options={{ headerShown: true }} />
+      <Tab.Screen name="Корзина" component={EventsScreen} options={{ headerShown: true }} />
       <Tab.Screen name="Профиль" component={ProfileNav} options={{ headerShown: false }} />
     </Tab.Navigator>
   </NavigationContainer>
