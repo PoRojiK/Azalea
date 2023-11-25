@@ -109,7 +109,7 @@ const FlowerShop = (userId) => {
             <MaterialIcons name="star" size={18} color="orange" />
             <Text style={{ marginLeft: 5, color: 'black' }}>{item.rating}</Text>
           </View>
-          <TouchableOpacity
+          <View
             style={{
               backgroundColor: '#f2f2f2',
               padding: 4,
@@ -121,7 +121,7 @@ const FlowerShop = (userId) => {
             }}
           >
             <Text style={{ color: 'black' }}>{item.price} ₽</Text>
-          </TouchableOpacity>
+          </View>
         </View>
       </View>
       </TouchableOpacity>

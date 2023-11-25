@@ -83,7 +83,7 @@ const CartScreen = () => {
               {/* Код для отображения товаров в корзине */}
             </TouchableOpacity>
           ))}
-          {/* Блок с вводом промокода и кнопкой применить */}
+          {/* Блок с вводом промокода  */}
           <View style={{ margin: 10,backgroundColor:'white',borderRadius:10,padding:10 }}>
             <Text style={{ color: 'black', fontSize: 18, marginBottom: 10 }}>Введите промокод</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>

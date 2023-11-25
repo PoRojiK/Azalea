@@ -13,12 +13,15 @@ import {
   Slider,
   StyleSheet,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {s} from 'react-native-wind';
 import Categories from '../components/CategoriesMain';
 import Banners from '../components/Banner';
 import FlowerShop from '../components/FlowerShop';
-import { MaterialIcons,FontAwesome  } from "@expo/vector-icons";
+import { MaterialIcons,FontAwesome,AntDesign  } from "@expo/vector-icons";
+import { FlowerData } from '../consts/index.js';
+import { useFavorite } from '../databases/FavoriteContext';
+import { useNavigation } from '@react-navigation/native';
 
 import {Picker} from '@react-native-picker/picker';
 
@@ -34,7 +37,8 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [addresses, setAddresses] = useState([]);
 
-
+  const navigationMain = useNavigation();
+  const { favouriteStates, selectedFavorites, toggleFavorite } = useFavorite();
 // -----------------------------
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState('8:00');
@@ -115,6 +119,21 @@ export default function HomeScreen() {
     Alert.alert('Адрес сохранен:', address);
   };
 
+
+  const [filteredFlowers, setFilteredFlowers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const filterFlowers = (query) => {
+    const filtered = FlowerData.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredFlowers(filtered);
+  };
+
+  useEffect(() => {
+    filterFlowers(searchQuery);
+  }, [searchQuery]);
+
+  
   return (
     <ScrollView style={s`flex-1 bg-white`}>
       {/* statusbar */}
@@ -479,7 +498,7 @@ export default function HomeScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={s`ml-auto`}
-          onPress={() => setCartVisible(true)}>
+          onPress={() => navigationMain.navigate('Корзина')}>
           <MaterialIcons name="shopping-cart" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -498,28 +517,76 @@ export default function HomeScreen() {
           />
           <TextInput
             style={[s`flex-1`, {paddingHorizontal: 5, height: 40}]}
-            placeholder="Поиск по товарам, магазинам"
+            placeholder="Поиск по товарам"
             placeholderTextColor="gray"
             color="gray"
-            // Добавьте здесь обработчик изменения текста поиска, если необходимо
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
           />
         </View>
-        <TouchableOpacity
-          style={[
-            s`w-10 h-10 justify-center items-center`,
-            {backgroundColor: '#f6f6f6', borderRadius: 13},
-          ]}
-          onPress={() => setFiltersVisible(true)}>
-          <MaterialIcons name="filter-list" size={24} color="black" />
-        </TouchableOpacity>
       </View>
       {/* categories */}
       <View>
+      {searchQuery !== '' ? (
+          null
+        ) : (
+        <View>
         <Categories />
         <Banners />
+        </View>
+        )}
       </View>
       <ScrollView>
-        <FlowerShop />
+        {/* Display filtered flowers if search query is present, otherwise display all flowers */}
+        {searchQuery !== '' ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {filteredFlowers.map((item, id) => (
+            <View key={item.id} style={{ flexDirection: 'row', width: '50%'}}>
+              <TouchableOpacity
+                onPress={() => navigationMain.navigate('ProductCard', { item })}
+                style={{
+                  margin: 8,
+                  backgroundColor: 'white',
+                  borderRadius: 15,
+                  height: 270,
+                  width: 180,
+                  shadowColor: 'gray',
+                  elevation: 4,
+                }}
+              >
+                <Image style={{ width: 180, height: 180, resizeMode: 'cover', borderRadius: 15 }} source={item.image} />
+                <Text style={{ fontWeight: 'bold', marginTop: 10, marginHorizontal: 10, fontSize: 12, color: 'black', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {item.name}
+                </Text>
+                <View style={{ flex: 1, justifyContent: 'flex-end', paddingHorizontal: 10, marginBottom: 5 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <MaterialIcons name="star" size={18} color="orange" />
+                      <Text style={{ marginLeft: 5, color: 'black' }}>{item.rating}</Text>
+                    </View>
+                    <View
+                      style={{
+                        backgroundColor: '#f2f2f2',
+                        padding: 4,
+                        borderRadius: 5,
+                        marginLeft: 10,
+                        fontWeight: 'bold',
+                        fontSize: 16,
+                        color: 'black',
+                      }}
+                    >
+                      <Text style={{ color: 'black' }}>{item.price} ₽</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+            </View>
+          ))}
+        </View>
+        ) : (
+          <FlowerShop />
+        )}
       </ScrollView>
     </ScrollView>
   );
