@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, TextInput, Button,TouchableOpacity,Text } from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 import { useNavigation } from '@react-navigation/native';

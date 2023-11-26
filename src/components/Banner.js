@@ -8,7 +8,7 @@ export default function Banners() {
     return (
         <ScrollView showsHorizontalScrollIndicator={false} horizontal contentContainerStyle={{paddingHorizontal: 8, marginTop: 15, justifyContent: "space-between"}}>
           {Banner_data.map((cat, index, name, bottom_text) => (  
-            <TouchableOpacity key={index} style={{marginRight: 8, backgroundColor: index === 0 ? '#ddd9e7' : '#e4ecff', borderRadius: 15, height:135,width:300}}>
+            <TouchableOpacity key={index} style={{marginRight: 8, backgroundColor: index === 0 ? '#ddd9e7' : '#e4ecff', borderRadius: 15, height:135,width:300,overflow: 'hidden',}}>
               <View>
                 <Text
                   style={[

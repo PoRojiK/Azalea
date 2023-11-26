@@ -31,9 +31,14 @@ export const CartProvider = ({ children }) => {
     setTotalItems(newTotalItems);
   };
   
+  const clearCart = () => {
+    setCartItems([]); // Очищаем корзину
+    setTotalItems(0); // Обнуляем общее количество товаров
+  };
+
 
   return (
-    <CartContext.Provider value={{ cartItems, totalItems, addToCart,updateCartItemQuantity  }}>
+    <CartContext.Provider value={{ cartItems, totalItems, addToCart,updateCartItemQuantity,clearCart}}>
       {children}
     </CartContext.Provider>
   );
